@@ -1,0 +1,93 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.language-container{
+    background-color: red;
+    width: 100px;
+    height: 100px;
+    margin-right: 100px;
+}
+
+/*Page-Create/Edit*/
+.create-item-container {
+    width: 50%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #000000;
+    background-color: #ced4da;
+    border-radius: 2%;
+}
+
+/*Create-Title*/
+.create-item-title {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Form-Container */
+.form-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.form-group {
+    min-width: 300px;
+    max-width: 80%;
+}
+
+/*Button-ImageFile*/
+.container-image-form {
+    border: solid 1px;
+    border-radius: .25rem;
+    border-color: #ced4da;
+}
+
+.custom-file-input {
+    position: absolute;
+    opacity: 0;
+}
+
+.custom-file-label {
+    width: 100%;
+    display: inline-block;
+    padding: .375rem .75rem;
+    cursor: pointer;
+    background-color: #ffffff;
+    color: #808080;
+    border-radius: .25rem;
+    transition: background-color .15s ease-in-out;
+}
