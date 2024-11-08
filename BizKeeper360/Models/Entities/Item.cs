@@ -14,5 +14,8 @@ namespace BizKeeper360.Models.Entities
         public decimal Price { get; set; }
         public int Rating { get; set; }
         public string Currency { get; set; }
+        public bool IsSold { get; set; }
+
+        public ICollection<Sale> Sales { get; set; }
     }
 }

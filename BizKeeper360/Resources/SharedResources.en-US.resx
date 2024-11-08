@@ -235,4 +235,7 @@
   <data name="EditPage.Greetings" xml:space="preserve">
     <value>Here you can edit your item</value>
   </data>
+  <data name="Button.Sold" xml:space="preserve">
+    <value>Sold</value>
+  </data>
 </root>

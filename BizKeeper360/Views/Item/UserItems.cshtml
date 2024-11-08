@@ -17,6 +17,7 @@
                 <th>@sharedLocalizer["CreatePage.Price"]</th>
                 <th>@sharedLocalizer["CreatePage.Rating"]</th>
                 <th>@sharedLocalizer["CreatePage.Actions"]</th>
+                <th>@sharedLocalizer["CreatePage.Actions"]</th>
             </tr>
         </thead>
         <tbody>
@@ -47,6 +48,22 @@
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-itemid="@item.ItemId">
                             @sharedLocalizer["Button.Delete"]
                         </button>
+                    </td>
+                    <td>
+                        @if (item.IsSold)
+                        {
+                            <span>Продано</span>
+                        }
+                        else
+                        {
+                            <form asp-action="MarkAsSold" method="post">
+                                <input type="hidden" name="itemId" value="@item.ItemId" />
+                                <input type="number" name="salePrice" placeholder="Цена продажи" required />
+
+                                <button type="button" onclick="markAsSold(@item.ItemId, @item.Price)" class="btn btn-success">Продано</button>
+                                @*<button type="submit" class="btn btn-success">Продать</button>*@
+                            </form>
+                        }
                     </td>
                 </tr>
             }
@@ -84,5 +101,13 @@
             var form = document.getElementById('deleteForm');
             form.setAttribute('action', formAction);
         });
+    </script>
+
+    <script>
+        function markAsSold(itemId, salePrice) {
+            fetch(`/Item/MarkAsSold?itemId=${itemId}&salePrice=${salePrice}`, {
+                method: 'POST'
+            }).then(() => location.reload());
+        }
     </script>
 }

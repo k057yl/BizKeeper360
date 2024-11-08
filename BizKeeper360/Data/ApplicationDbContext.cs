@@ -11,5 +11,10 @@ namespace BizKeeper360.Data
         
         public DbSet<Item> Items { get; set; }
         public DbSet<Sale> Sales { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

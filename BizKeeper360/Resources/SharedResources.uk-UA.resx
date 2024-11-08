@@ -271,4 +271,7 @@
   <data name="EditPage.Greetings" xml:space="preserve">
     <value>Тут ви можете відредагувати свій предмет</value>
   </data>
+  <data name="Button.Sold" xml:space="preserve">
+    <value>Продаж</value>
+  </data>
 </root>

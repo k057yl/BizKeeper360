@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace BizKeeper360.Data.Migrations
+namespace BizKeeper360.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class EnableCascadeDeleteForSales : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

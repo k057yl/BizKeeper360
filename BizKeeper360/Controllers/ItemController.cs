@@ -197,5 +197,55 @@ namespace BizKeeper360.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("UserItems");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> MarkAsSold(int itemId, decimal salePrice)
+        {
+            var item = await _context.Items.FindAsync(itemId);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            // Устанавливаем флаг "продано" для предмета
+            item.IsSold = true;
+
+            // Создаем запись о продаже
+            var sale = new Sale
+            {
+                ItemId = item.ItemId, // Ссылка на оригинальный предмет
+                Name = item.Name,
+                Description = item.Description,
+                SalePrice = salePrice,
+                SaleDate = DateTime.UtcNow,
+                Currency = item.Currency
+            };
+
+            _context.Sales.Add(sale);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteItem(int itemId)
+        {
+            var item = await _context.Items.FindAsync(itemId);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            _context.Items.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Sales()//*****************
+        {
+            var sales = await _context.Sales.Include(s => s.Item).ToListAsync();
+            return View(sales);
+        }
     }
 }

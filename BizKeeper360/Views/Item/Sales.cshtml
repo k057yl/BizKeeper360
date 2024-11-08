@@ -1,0 +1,44 @@
+﻿@model IEnumerable<BizKeeper360.Models.Entities.Sale>
+@inject BizKeeper360.Resources.SharedLocalizationService sharedLocalizer
+
+<h2>@sharedLocalizer["SalesHistory.Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@sharedLocalizer["CreatePage.Name"]</th>
+            <th>@sharedLocalizer["SaleDate"]</th>
+            <th>@sharedLocalizer["SalePrice"]</th>
+            <th>@sharedLocalizer["Profit"]</th>
+            <th>Sale</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sale in Model)
+        {
+            if (sale.Item != null)
+            {
+                <tr>
+                    <td>@sale.Name</td>
+                    <td>@sale.SaleDate.ToShortDateString()</td>
+                    <td>@sale.SalePrice @sale.Item.Currency</td>
+                    <td>@sale.Profit @sale.Item.Currency</td>
+                    <td>
+                        <button type="button" onclick="deleteSale(@sale.SaleId)" class="btn btn-danger">Удалить</button>
+                    </td>
+                </tr>
+            }
+            
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script>
+        function deleteSale(saleId) {
+            fetch(`/Sale/DeleteSale?saleId=${saleId}`, {
+                method: 'POST'
+            }).then(() => location.reload());
+        }
+    </script>
+}
