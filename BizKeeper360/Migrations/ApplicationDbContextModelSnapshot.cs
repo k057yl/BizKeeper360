@@ -45,6 +45,9 @@ namespace BizKeeper360.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsSold")
                         .HasColumnType("bit");
 
@@ -87,6 +90,9 @@ namespace BizKeeper360.Migrations
 
                     b.Property<int?>("ItemId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("ItemIsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -325,7 +331,8 @@ namespace BizKeeper360.Migrations
                 {
                     b.HasOne("BizKeeper360.Models.Entities.Item", "Item")
                         .WithMany("Sales")
-                        .HasForeignKey("ItemId");
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Item");
                 });

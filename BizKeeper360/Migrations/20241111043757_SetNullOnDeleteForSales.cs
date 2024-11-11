@@ -5,7 +5,7 @@
 namespace BizKeeper360.Migrations
 {
     /// <inheritdoc />
-    public partial class EnableCascadeDeleteForSales : Migration
+    public partial class SetNullOnDeleteForSales : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

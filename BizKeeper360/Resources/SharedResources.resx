@@ -274,4 +274,22 @@
   <data name="Button.Sold" xml:space="preserve">
     <value />
   </data>
+  <data name="SalesPage.SaleDate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SalesPage.SalePrice" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SalesPage.Profit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SalesPage.SalesHistory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Button.Sales" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Button.SellingPrice" xml:space="preserve">
+    <value />
+  </data>
 </root>

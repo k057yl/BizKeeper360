@@ -1,39 +1,34 @@
 ﻿@model IEnumerable<BizKeeper360.Models.Entities.Sale>
 @inject BizKeeper360.Resources.SharedLocalizationService sharedLocalizer
 
-<h2>@sharedLocalizer["SalesHistory.Title"]</h2>
+<h2>@sharedLocalizer["SalesPage.SalesHistory"]</h2>
 
 <table class="table">
     <thead>
         <tr>
             <th>@sharedLocalizer["CreatePage.Name"]</th>
-            <th>@sharedLocalizer["SaleDate"]</th>
-            <th>@sharedLocalizer["SalePrice"]</th>
-            <th>@sharedLocalizer["Profit"]</th>
-            <th>Sale</th>
+            <th>@sharedLocalizer["SalesPage.SaleDate"]</th>
+            <th>@sharedLocalizer["SalesPage.SalePrice"]</th>
+            <th>@sharedLocalizer["SalesPage.Profit"]</th>
+            <th>@sharedLocalizer["CreatePage.Actions"]</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var sale in Model)
         {
-            if (sale.Item != null)
-            {
-                <tr>
-                    <td>@sale.Name</td>
-                    <td>@sale.SaleDate.ToShortDateString()</td>
-                    <td>@sale.SalePrice @sale.Item.Currency</td>
-                    <td>@sale.Profit @sale.Item.Currency</td>
-                    <td>
-                        <button type="button" onclick="deleteSale(@sale.SaleId)" class="btn btn-danger">Удалить</button>
-                    </td>
-                </tr>
-            }
-            
+            <tr>
+                <td>@sale.ItemName</td>
+                <td>@sale.SaleDate.ToShortDateString()</td>
+                <td>@sale.SalePrice @sale.Currency</td>
+                <td>@sale.Profit @sale.Currency</td>
+                <td>
+                    <button type="button" onclick="deleteSale(@sale.SaleId)" class="btn btn-danger">@sharedLocalizer["Button.Delete"]</button>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
-
-@section Scripts{
+@section Scripts {
     <script>
         function deleteSale(saleId) {
             fetch(`/Sale/DeleteSale?saleId=${saleId}`, {

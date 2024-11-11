@@ -15,6 +15,12 @@ namespace BizKeeper360.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Sale>()
+                .HasOne(s => s.Item)
+                .WithMany(i => i.Sales)
+                .HasForeignKey(s => s.ItemId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

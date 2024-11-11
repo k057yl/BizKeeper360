@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BizKeeper360.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241108084239_Initial")]
-    partial class Initial
+    [Migration("20241111043757_SetNullOnDeleteForSales")]
+    partial class SetNullOnDeleteForSales
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,6 +47,9 @@ namespace BizKeeper360.Migrations
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsSold")
                         .HasColumnType("bit");
@@ -84,6 +87,16 @@ namespace BizKeeper360.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ItemIsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -98,6 +111,8 @@ namespace BizKeeper360.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("SaleId");
+
+                    b.HasIndex("ItemId");
 
                     b.ToTable("Sales");
                 });
@@ -315,6 +330,16 @@ namespace BizKeeper360.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("BizKeeper360.Models.Entities.Sale", b =>
+                {
+                    b.HasOne("BizKeeper360.Models.Entities.Item", "Item")
+                        .WithMany("Sales")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Item");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -364,6 +389,11 @@ namespace BizKeeper360.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BizKeeper360.Models.Entities.Item", b =>
+                {
+                    b.Navigation("Sales");
                 });
 #pragma warning restore 612, 618
         }

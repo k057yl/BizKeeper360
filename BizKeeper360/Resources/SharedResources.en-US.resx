@@ -207,18 +207,11 @@
   <data name="Field.Rating" xml:space="preserve">
     <value>Enter Rating</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="HomePage.Paragraph1" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="Message.Delete.Description" xml:space="preserve">
     <value>Are you sure you want to remove the item?</value>
   </data>
   <data name="Message.Delete.Title" xml:space="preserve">
     <value>Delete Item</value>
-  </data>
-  <data name="Warning.DescriptionMinLengthMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
   </data>
   <data name="Button.Logout" xml:space="preserve">
     <value>Logout</value>
@@ -237,5 +230,23 @@
   </data>
   <data name="Button.Sold" xml:space="preserve">
     <value>Sold</value>
+  </data>
+  <data name="SalesPage.SaleDate" xml:space="preserve">
+    <value>Sale Date</value>
+  </data>
+  <data name="SalesPage.SalePrice" xml:space="preserve">
+    <value>Sale Price</value>
+  </data>
+  <data name="SalesPage.Profit" xml:space="preserve">
+    <value>Profit</value>
+  </data>
+  <data name="SalesPage.SalesHistory" xml:space="preserve">
+    <value>Sales History</value>
+  </data>
+  <data name="Button.Sales" xml:space="preserve">
+    <value>Sales</value>
+  </data>
+  <data name="Button.SellingPrice" xml:space="preserve">
+    <value>SellingPrice</value>
   </data>
 </root>

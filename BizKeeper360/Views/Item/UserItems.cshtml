@@ -42,9 +42,12 @@
                     <td>@item.Price @item.Currency</td>
                     <td>@item.Rating</td>
                     <td>
-                        <a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ItemId" class="btn btn-secondary me-2">
-                            @sharedLocalizer["Button.Edit"]
-                        </a>
+                        @if (!item.IsSold)
+                        {
+                            <a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ItemId" class="btn btn-secondary me-2">
+                                @sharedLocalizer["Button.Edit"]
+                            </a>
+                        }
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-itemid="@item.ItemId">
                             @sharedLocalizer["Button.Delete"]
                         </button>
@@ -52,16 +55,15 @@
                     <td>
                         @if (item.IsSold)
                         {
-                            <span>Продано</span>
+                            <span>@sharedLocalizer["Button.Sold"]</span>
                         }
                         else
                         {
-                            <form asp-action="MarkAsSold" method="post">
+                            <form asp-action="SellItem" method="post">
                                 <input type="hidden" name="itemId" value="@item.ItemId" />
-                                <input type="number" name="salePrice" placeholder="Цена продажи" required />
+                                <input type="number" name="salePrice" placeholder=@sharedLocalizer["Button.SellingPrice"] required />
 
-                                <button type="button" onclick="markAsSold(@item.ItemId, @item.Price)" class="btn btn-success">Продано</button>
-                                @*<button type="submit" class="btn btn-success">Продать</button>*@
+                                <button type="submit" class="btn btn-success">@sharedLocalizer["Button.Sold"]</button>
                             </form>
                         }
                     </td>
@@ -104,8 +106,8 @@
     </script>
 
     <script>
-        function markAsSold(itemId, salePrice) {
-            fetch(`/Item/MarkAsSold?itemId=${itemId}&salePrice=${salePrice}`, {
+        function SellItem(itemId, salePrice) {
+            fetch(`/Item/SellItem?itemId=${itemId}&salePrice=${salePrice}`, {
                 method: 'POST'
             }).then(() => location.reload());
         }

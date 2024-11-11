@@ -118,7 +118,6 @@ namespace BizKeeper360.Controllers
             return View(item);
         }
 
-        // GET: Item/Edit/5
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -136,13 +135,12 @@ namespace BizKeeper360.Controllers
                 Rating = item.Rating,
                 Price = item.Price,
                 Currency = item.Currency,
-                ExistingImagePath = item.ImagePath // Путь к уже сохраненному изображению
+                ExistingImagePath = item.ImagePath
             };
 
             return View(model);
         }
 
-        // POST: Item/Edit/5
         [HttpPost]
         public async Task<IActionResult> Edit(int id, ItemDTO model)
         {
@@ -166,7 +164,6 @@ namespace BizKeeper360.Controllers
 
             if (model.ImageFile != null && model.ImageFile.Length > 0)
             {
-                // Удаляем старое изображение, если оно существует
                 if (!string.IsNullOrEmpty(item.ImagePath))
                 {
                     var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", item.ImagePath.TrimStart('/'));
@@ -176,7 +173,6 @@ namespace BizKeeper360.Controllers
                     }
                 }
 
-                // Сохраняем новое изображение
                 var fileName = Path.GetFileName(model.ImageFile.FileName);
                 var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
                 if (!Directory.Exists(uploads))
@@ -198,53 +194,64 @@ namespace BizKeeper360.Controllers
             return RedirectToAction("UserItems");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> MarkAsSold(int itemId, decimal salePrice)
+        public async Task<IActionResult> SellItem(int itemId, decimal salePrice, decimal profit)
         {
-            var item = await _context.Items.FindAsync(itemId);
-            if (item == null)
+            var item = await _context.Items.FirstOrDefaultAsync(i => i.ItemId == itemId);
+            if (item == null || item.UserId != _userManager.GetUserId(User))
             {
                 return NotFound();
             }
 
-            // Устанавливаем флаг "продано" для предмета
-            item.IsSold = true;
-
-            // Создаем запись о продаже
             var sale = new Sale
             {
-                ItemId = item.ItemId, // Ссылка на оригинальный предмет
+                ItemId = item.ItemId,
                 Name = item.Name,
                 Description = item.Description,
+                SaleDate = DateTime.Now,
                 SalePrice = salePrice,
-                SaleDate = DateTime.UtcNow,
-                Currency = item.Currency
+                Profit = salePrice - item.Price,
+                Currency = item.Currency,
+                ItemIsDeleted = item.IsDeleted
             };
 
             _context.Sales.Add(sale);
+            item.IsSold = true;
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Sales");
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteItem(int itemId)
+        public async Task<IActionResult> DeleteItem(int id)
         {
-            var item = await _context.Items.FindAsync(itemId);
-            if (item == null)
+            var item = await _context.Items.Include(i => i.Sales).FirstOrDefaultAsync(i => i.ItemId == id);
+            if (item == null || item.UserId != _userManager.GetUserId(User))
             {
                 return NotFound();
             }
 
-            _context.Items.Remove(item);
+            item.IsDeleted = true;
+
+            foreach (var sale in item.Sales)
+            {
+                sale.ItemIsDeleted = true;
+            }
+
+            _context.Items.Update(item);
+            _context.Sales.UpdateRange(item.Sales);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("UserItems", "Item");
         }
 
-        public async Task<IActionResult> Sales()//*****************
+        public async Task<IActionResult> Sales()
         {
-            var sales = await _context.Sales.Include(s => s.Item).ToListAsync();
+            var user = await _userManager.GetUserAsync(User);
+            var sales = await _context.Sales
+                .Include(s => s.Item)
+                .Where(s => s.Item.UserId == user.Id || s.Item == null)
+                .ToListAsync();
+
             return View(sales);
         }
     }

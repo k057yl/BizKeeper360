@@ -15,6 +15,7 @@ namespace BizKeeper360.Models.Entities
         public int Rating { get; set; }
         public string Currency { get; set; }
         public bool IsSold { get; set; }
+        public bool IsDeleted { get; set; }
 
         public ICollection<Sale> Sales { get; set; }
     }
