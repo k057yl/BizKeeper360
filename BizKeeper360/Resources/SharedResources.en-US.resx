@@ -207,6 +207,9 @@
   <data name="Field.Rating" xml:space="preserve">
     <value>Enter Rating</value>
   </data>
+  <data name="Item.ExpirationDate" xml:space="preserve">
+    <value>Expiry date (use by)</value>
+  </data>
   <data name="Message.Delete.Description" xml:space="preserve">
     <value>Are you sure you want to remove the item?</value>
   </data>
@@ -248,5 +251,8 @@
   </data>
   <data name="Button.SellingPrice" xml:space="preserve">
     <value>SellingPrice</value>
+  </data>
+  <data name="Button.Sell" xml:space="preserve">
+    <value>Sell</value>
   </data>
 </root>

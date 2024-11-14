@@ -3,31 +3,33 @@
 
 <h2>@sharedLocalizer["SalesPage.SalesHistory"]</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>@sharedLocalizer["CreatePage.Name"]</th>
-            <th>@sharedLocalizer["SalesPage.SaleDate"]</th>
-            <th>@sharedLocalizer["SalesPage.SalePrice"]</th>
-            <th>@sharedLocalizer["SalesPage.Profit"]</th>
-            <th>@sharedLocalizer["CreatePage.Actions"]</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var sale in Model)
-        {
+<div class="sales-container">
+    <table class="table">
+        <thead>
             <tr>
-                <td>@sale.ItemName</td>
-                <td>@sale.SaleDate.ToShortDateString()</td>
-                <td>@sale.SalePrice @sale.Currency</td>
-                <td>@sale.Profit @sale.Currency</td>
-                <td>
-                    <button type="button" onclick="deleteSale(@sale.SaleId)" class="btn btn-danger">@sharedLocalizer["Button.Delete"]</button>
-                </td>
+                <th>@sharedLocalizer["CreatePage.Name"]</th>
+                <th>@sharedLocalizer["SalesPage.SaleDate"]</th>
+                <th>@sharedLocalizer["SalesPage.SalePrice"]</th>
+                <th>@sharedLocalizer["SalesPage.Profit"]</th>
+                <th>@sharedLocalizer["CreatePage.Actions"]</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var sale in Model)
+            {
+                <tr>
+                    <td>@sale.ItemName</td>
+                    <td>@sale.SaleDate.ToShortDateString()</td>
+                    <td>@sale.SalePrice @sale.Currency</td>
+                    <td>@sale.Profit @sale.Currency</td>
+                    <td>
+                        <button type="button" onclick="deleteSale(@sale.SaleId)" class="btn btn-danger">@sharedLocalizer["Button.Delete"]</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 @section Scripts {
     <script>
         function deleteSale(saleId) {

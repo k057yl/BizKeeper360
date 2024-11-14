@@ -292,4 +292,7 @@
   <data name="Button.SellingPrice" xml:space="preserve">
     <value>Ціна продажі</value>
   </data>
+  <data name="Button.Sell" xml:space="preserve">
+    <value>Продати</value>
+  </data>
 </root>

@@ -12,7 +12,7 @@
         public decimal Profit { get; set; }
         public Item Item { get; set; }
 
-        public string ItemName => Item?.Name ?? "Deleted Item";
+        public string ItemName => Item?.Name ?? Name;
         public bool ItemIsDeleted { get; set; }
     }
 }

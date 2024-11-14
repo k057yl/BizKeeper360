@@ -18,17 +18,49 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
+        url('../images/Background.png') no-repeat center center fixed;
+    background-size: cover;
+    margin-bottom: 60px;
 }
 
-.language-container{
-    background-color: red;
-    width: 100px;
-    height: 100px;
-    margin-right: 100px;
+/*Table---Start*/
+table {
+    border: 1px solid black;
+    border-collapse: collapse;
 }
 
-/*Page-Create/Edit*/
+table th, table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
+}
+/*Table---End*/
+
+/*LanguageContainer---Start*/
+.language-selector {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 20px;
+    position: relative;
+}
+
+.language-selector .btn {
+    width: 80%;
+    text-align: center;
+}
+
+.language-selector .dropdown-menu {
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+/*LanguageContainer---End*/
+
+/*PageCreate/Edit*/
 .create-item-container {
     width: 50%;
     height: 80%;
@@ -44,7 +76,7 @@ body {
     border-radius: 2%;
 }
 
-/*Create-Title*/
+/*CreateTitle*/
 .create-item-title {
     position: absolute;
     top: 0;
@@ -57,7 +89,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* Form-Container */
+/* FormContainer */
 .form-container {
     width: 100%;
     display: flex;
@@ -69,7 +101,7 @@ body {
     max-width: 80%;
 }
 
-/*Button-ImageFile*/
+/*ButtonImageFile---Start*/
 .container-image-form {
     border: solid 1px;
     border-radius: .25rem;
@@ -90,4 +122,89 @@ body {
     color: #808080;
     border-radius: .25rem;
     transition: background-color .15s ease-in-out;
+}
+/*ButtonImageFile---End*/
+
+/*SalesPage*/
+.sales-container {
+    position: relative;
+    width: 100%;
+    max-height: 70%;
+    border: solid 1px;
+    background-color: #ccffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/*MainContent*/
+.main-content {
+    margin-left: 210px;
+}
+
+/*MainLeftPanel---Start*/
+.main-container {
+    display: flex;
+    position:relative;
+}
+
+.custom-sidebar {
+    background-color: #ccffff;
+    width: 200px;
+    max-height: 90%;
+    color: #fff;
+    position: fixed;
+    top: 60px;
+    bottom: 60px;
+}
+
+.custom-sidebar nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.custom-sidebar nav ul li {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.custom-sidebar nav ul li a.sidebar-link {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+    padding: 10px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.custom-sidebar nav ul li a.nav-link:hover {
+    background-color: #000000 !important;
+    color: #ccffff !important;
+    padding-left: 15px !important;
+    border-radius: 25px !important;
+}
+
+.custom-sidebar nav ul li a.nav-link:active {
+    background-color: #333 !important;
+    color: #ff0000 !important;
+}
+/*MainLeftPanel---End*/
+
+/*DeveloperLogo*/
+.developer-logo {
+    background-image: url('../images/Logo_v1.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 90px;
+    height: 50px;
+    z-index: 9999;
 }

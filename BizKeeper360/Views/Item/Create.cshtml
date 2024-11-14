@@ -10,6 +10,21 @@
     <div class="form-container">
     <form asp-action="Create" method="post" enctype="multipart/form-data">
         <div class="form-group">
+            <label asp-for="ImageFile" class="control-label">@localizer["CreatePage.SelectFile"]</label>
+            <div class="container-image-form">
+                <div class="custom-file">
+                    <input asp-for="ImageFile" id="fileUpload" class="custom-file-input" type="file" />
+                    <label class="custom-file-label" for="fileUpload">@localizer["CreatePage.SelectFile"]</label>
+                </div>
+            </div>
+            <!-- Thumbnail container with delete button -->
+            <div id="thumbnailContainer" style="position: relative; display: inline-block; margin-top: 10px;">
+                <img id="thumbnail" src="#" alt="Preview" style="display:none; width:100px; height:100px; border: 1px solid #ced4da;" />
+                <button type="button" id="removeButton" style="display: none; position: absolute; top: -5px; right: -5px; background-color: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; text-align: center; line-height: 18px; font-size: 16px;">&Chi;</button>
+            </div>
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>
+        <div class="form-group">
             <label asp-for="Name" class="control-label">@localizer["CreatePage.Name"]</label>
             <input asp-for="Name" class="form-control" placeholder="@localizer["Field.Name"]" />
             <span asp-validation-for="Name" class="text-danger"></span>
@@ -37,21 +52,6 @@
             <label asp-for="Rating" class="control-label">@localizer["CreatePage.Rating"]</label>
             <input asp-for="Rating" class="form-control" placeholder="@localizer["Field.Rating"]" />
             <span asp-validation-for="Rating" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="ImageFile" class="control-label">@localizer["CreatePage.SelectFile"]</label>
-            <div class="container-image-form">
-                <div class="custom-file">
-                    <input asp-for="ImageFile" id="fileUpload" class="custom-file-input" type="file" />
-                    <label class="custom-file-label" for="fileUpload">@localizer["CreatePage.SelectFile"]</label>
-                </div>
-            </div>
-            <!-- Thumbnail container with delete button -->
-            <div id="thumbnailContainer" style="position: relative; display: inline-block; margin-top: 10px;">
-                <img id="thumbnail" src="#" alt="Preview" style="display:none; width:100px; height:100px; border: 1px solid #ced4da;" />
-                <button type="button" id="removeButton" style="display: none; position: absolute; top: -5px; right: -5px; background-color: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; text-align: center; line-height: 18px; font-size: 16px;">&Chi;</button>
-            </div>
-            <span asp-validation-for="ImageFile" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="ExpirationDate" class="control-label">@localizer["ExpirationDate"]</label>
