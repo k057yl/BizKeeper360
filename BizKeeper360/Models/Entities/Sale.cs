@@ -7,6 +7,7 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime SaleDate { get; set; }
+        public DateTime? ItemCreationDate => Item?.CreationDate;
         public decimal SalePrice { get; set; }
         public string Currency { get; set; }
         public decimal Profit { get; set; }
@@ -14,5 +15,7 @@
 
         public string ItemName => Item?.Name ?? Name;
         public bool ItemIsDeleted { get; set; }
+
+        public string ItemImagePath { get; set; }
     }
 }

@@ -3,10 +3,37 @@
 
 <h2>@sharedLocalizer["SalesPage.SalesHistory"]</h2>
 
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        @sharedLocalizer["Sales.Filter"]
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+        <li>
+            <form method="get">
+                <div class="row p-3">
+                    <div class="col-md-6">
+                        <label for="startDate">@sharedLocalizer["Sales.StartDate"]</label>
+                        <input type="date" id="startDate" name="startDate" class="form-control" value="@ViewData["StartDate"]" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endDate">@sharedLocalizer["Sales.EndDate"]</label>
+                        <input type="date" id="endDate" name="endDate" class="form-control" value="@ViewData["EndDate"]" />
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between p-3">
+                    <button type="submit" class="btn btn-primary">@sharedLocalizer["Button.Filter"]</button>
+                    <a href="@Url.Action("Sales")" class="btn btn-outline-secondary">@sharedLocalizer["Button.ResetFilter"]</a> 
+                </div>
+            </form>
+        </li>
+    </ul>
+</div>
+
 <div class="sales-container">
     <table class="table">
         <thead>
             <tr>
+                <th>@sharedLocalizer["CreatePage.Image"]</th>
                 <th>@sharedLocalizer["CreatePage.Name"]</th>
                 <th>@sharedLocalizer["SalesPage.SaleDate"]</th>
                 <th>@sharedLocalizer["SalesPage.SalePrice"]</th>
@@ -18,6 +45,19 @@
             @foreach (var sale in Model)
             {
                 <tr>
+                    <td class="center-content">
+                        @if (!string.IsNullOrEmpty(sale.ItemImagePath))
+                        {
+                            <div class="photo-container">
+                                <img src="@sale.ItemImagePath" alt="Image" class="item-photo" />
+                                <span class="creation-date">@sale.ItemCreationDate?.ToShortDateString()</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <span>@sharedLocalizer["NoImage"]</span>
+                        }
+                    </td>
                     <td>@sale.ItemName</td>
                     <td>@sale.SaleDate.ToShortDateString()</td>
                     <td>@sale.SalePrice @sale.Currency</td>

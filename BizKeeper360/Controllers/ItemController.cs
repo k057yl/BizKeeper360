@@ -26,7 +26,7 @@ namespace BizKeeper360.Controllers
         {
             return View();
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Create(ItemDTO model)
         {
@@ -55,10 +55,13 @@ namespace BizKeeper360.Controllers
                         imagePath = $"/images/{fileName}";
                     }
 
+                    var expirationDate = model.ExpirationDate ?? DateTime.MaxValue;
+
                     var item = new Item
                     {
                         Name = model.Name,
-                        ExpirationDate = model.ExpirationDate,
+                        CreationDate = DateTime.Now,
+                        ExpirationDate = expirationDate,
                         ImagePath = imagePath,
                         Description = model.Description,
                         Rating = model.Rating,
@@ -202,6 +205,8 @@ namespace BizKeeper360.Controllers
                 return NotFound();
             }
 
+            string imagePath = item.ImagePath ?? "/images/Logo_v1.png";
+
             var sale = new Sale
             {
                 ItemId = item.ItemId,
@@ -211,7 +216,8 @@ namespace BizKeeper360.Controllers
                 SalePrice = salePrice,
                 Profit = salePrice - item.Price,
                 Currency = item.Currency,
-                ItemIsDeleted = item.IsDeleted
+                ItemIsDeleted = item.IsDeleted,
+                ItemImagePath = imagePath
             };
 
             _context.Sales.Add(sale);
@@ -221,6 +227,45 @@ namespace BizKeeper360.Controllers
             return RedirectToAction("Sales");
         }
 
+        public async Task<IActionResult> Sales(DateTime? startDate, DateTime? endDate)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var salesQuery = _context.Sales
+                .Include(s => s.Item)
+                .Where(s => s.Item.UserId == user.Id || s.Item == null);
+
+            if (startDate.HasValue)
+            {
+                salesQuery = salesQuery.Where(s => s.SaleDate >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                salesQuery = salesQuery.Where(s => s.SaleDate <= endDate.Value);
+            }
+
+            var sales = await salesQuery.ToListAsync();
+
+            // Передача выбранных дат в представление для отображения в фильтре
+            ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
+
+            return View(sales);
+        }
+
+        /*
+        public async Task<IActionResult> Sales()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var sales = await _context.Sales
+                .Include(s => s.Item)
+                .Where(s => s.Item.UserId == user.Id || s.Item == null)
+                .ToListAsync();
+
+            return View(sales);
+        }
+        */
         [HttpPost]
         public async Task<IActionResult> DeleteItem(int id)
         {
@@ -242,17 +287,6 @@ namespace BizKeeper360.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("UserItems", "Item");
-        }
-
-        public async Task<IActionResult> Sales()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var sales = await _context.Sales
-                .Include(s => s.Item)
-                .Where(s => s.Item.UserId == user.Id || s.Item == null)
-                .ToListAsync();
-
-            return View(sales);
-        }
+        } 
     }
 }

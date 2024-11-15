@@ -295,4 +295,13 @@
   <data name="Button.Sell" xml:space="preserve">
     <value />
   </data>
+  <data name="Table.CreateDate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Item.NoExperationDate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CreatePage.ShowExperationDate" xml:space="preserve">
+    <value />
+  </data>
 </root>

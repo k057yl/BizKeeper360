@@ -208,3 +208,31 @@ table th, table td {
     height: 50px;
     z-index: 9999;
 }
+
+/*SalesPhoto*/
+.center-content {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.photo-container {
+    display: inline-block;
+    text-align: center;
+}
+
+.item-photo {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+    margin-bottom: 5px;
+}
+
+.creation-date {
+    display: block;
+    font-size: 14px;
+}
+
+/*ChangeColorExpiringSoon*/
+.expiring-soon {
+    background-color: #ffcccc;
+}

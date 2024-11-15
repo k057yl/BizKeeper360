@@ -13,6 +13,7 @@
                 <th>@sharedLocalizer["CreatePage.Image"]</th>
                 <th>@sharedLocalizer["CreatePage.Name"]</th>
                 <th>@sharedLocalizer["CreatePage.Description"]</th>
+                <th>@sharedLocalizer["Table.CreateDate"]</th>
                 <th>@sharedLocalizer["Item.ExpirationDate"]</th>
                 <th>@sharedLocalizer["CreatePage.Price"]</th>
                 <th>@sharedLocalizer["CreatePage.Rating"]</th>
@@ -23,7 +24,9 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                var isExpiringSoon = !item.IsSold && (item.ExpirationDate - DateTime.Now).TotalDays <= 7;
+
+                <tr class="@(isExpiringSoon ? "expiring-soon" : "")">
                     <td>
                         @if (!string.IsNullOrEmpty(item.ImagePath))
                         {
@@ -38,7 +41,17 @@
                     </td>
                     <td>@item.Name</td>
                     <td>@item.Description</td>
-                    <td>@item.ExpirationDate.ToShortDateString()</td>
+                    <td>@item.CreationDate</td>
+                    <td>
+                        @if (item.ExpirationDate == DateTime.MaxValue)
+                        {
+                            @sharedLocalizer["Item.NoExperationDate"]
+                        }
+                        else
+                        {
+                            @item.ExpirationDate.ToShortDateString()
+                        }
+                    </td>
                     <td>@item.Price @item.Currency</td>
                     <td>@item.Rating</td>
                     <td>
@@ -62,7 +75,6 @@
                             <form asp-action="SellItem" method="post">
                                 <input type="hidden" name="itemId" value="@item.ItemId" />
                                 <input type="number" name="salePrice" placeholder=@sharedLocalizer["Button.SellingPrice"] required />
-
                                 <button type="submit" class="btn btn-success">@sharedLocalizer["Button.Sell"]</button>
                             </form>
                         }

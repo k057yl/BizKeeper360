@@ -255,4 +255,13 @@
   <data name="Button.Sell" xml:space="preserve">
     <value>Sell</value>
   </data>
+  <data name="Table.CreateDate" xml:space="preserve">
+    <value>Create Date</value>
+  </data>
+  <data name="Item.NoExperationDate" xml:space="preserve">
+    <value>No Experation Date</value>
+  </data>
+  <data name="CreatePage.ShowExperationDate" xml:space="preserve">
+    <value>Set expiration date</value>
+  </data>
 </root>
