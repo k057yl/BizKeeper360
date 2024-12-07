@@ -20,23 +20,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="d-flex justify-content-end">
-                    <!--<ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@sharedLocalizer["Button.Home"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@sharedLocalizer["Button.Privacy"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Item" asp-action="Create">@sharedLocalizer["Button.Create"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Item" asp-action="UserItems">@sharedLocalizer["Button.Item"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Item" asp-action="Sales">@sharedLocalizer["Button.Sales"]</a>
-                        </li>
-                    </ul>-->
+                    
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -48,24 +32,24 @@
                 <nav>
                     <ul>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@sharedLocalizer["Button.Home"]</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@sharedLocalizer.Buttons["MainMenuHome"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@sharedLocalizer["Button.Privacy"]</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@sharedLocalizer.Buttons["Button.Privacy"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Item" asp-action="Create">@sharedLocalizer["Button.Create"]</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Item" asp-action="Create">@sharedLocalizer.Buttons["MainMenuCreate"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Item" asp-action="UserItems">@sharedLocalizer["Button.Item"]</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Item" asp-action="UserItems">@sharedLocalizer.Buttons["MainMenuItem"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Item" asp-action="Sales">@sharedLocalizer["Button.Sales"]</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Item" asp-action="Sales">@sharedLocalizer.Buttons["MainMenuSales"]</a>
                         </li>
                         <!--LanguageButton-->
                         <div class="language-selector">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                @sharedLocalizer["Button.Language"]
+                                @sharedLocalizer.Buttons["Language"]
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li>

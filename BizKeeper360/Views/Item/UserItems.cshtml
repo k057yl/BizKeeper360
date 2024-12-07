@@ -10,23 +10,24 @@
     <table class="table">
         <thead>
             <tr>
-                <th>@sharedLocalizer["CreatePage.Image"]</th>
-                <th>@sharedLocalizer["CreatePage.Name"]</th>
-                <th>@sharedLocalizer["CreatePage.Description"]</th>
-                <th>@sharedLocalizer["Table.CreateDate"]</th>
-                <th>@sharedLocalizer["Item.ExpirationDate"]</th>
-                <th>@sharedLocalizer["CreatePage.Price"]</th>
-                <th>@sharedLocalizer["CreatePage.Rating"]</th>
-                <th>@sharedLocalizer["CreatePage.Actions"]</th>
-                <th>@sharedLocalizer["CreatePage.Actions"]</th>
+                <th>@sharedLocalizer.Tables["Image"]</th>
+                <th>@sharedLocalizer.Tables["Name"]</th>
+                <th>@sharedLocalizer.Tables["Description"]</th>
+                <th>@sharedLocalizer.Tables["CreateDate"]</th>
+                <th>@sharedLocalizer.Tables["ExpirationDate"]</th>
+                <th>@sharedLocalizer.Tables["Price"]</th>
+                <th>@sharedLocalizer.Tables["Category"]</th>
+                <th>@sharedLocalizer.Tables["Actions"]</th>
+                <th>@sharedLocalizer.Tables["Actions"]</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 var isExpiringSoon = !item.IsSold && (item.ExpirationDate - DateTime.Now).TotalDays <= 7;
+                var isExpired = !item.IsSold && item.ExpirationDate < DateTime.Now;
 
-                <tr class="@(isExpiringSoon ? "expiring-soon" : "")">
+                <tr class="@(isExpired ? "expired" : isExpiringSoon ? "expiring-soon" : "")">
                     <td>
                         @if (!string.IsNullOrEmpty(item.ImagePath))
                         {
@@ -36,7 +37,7 @@
                         }
                         else
                         {
-                            <span>@sharedLocalizer["NoImage"]</span>
+                            <span>@sharedLocalizer.Messages["NoImage"]</span>
                         }
                     </td>
                     <td>@item.Name</td>
@@ -45,7 +46,7 @@
                     <td>
                         @if (item.ExpirationDate == DateTime.MaxValue)
                         {
-                            @sharedLocalizer["Item.NoExperationDate"]
+                            @sharedLocalizer.Messages["NoExperationDate"]
                         }
                         else
                         {
@@ -58,24 +59,24 @@
                         @if (!item.IsSold)
                         {
                             <a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ItemId" class="btn btn-secondary me-2">
-                                @sharedLocalizer["Button.Edit"]
+                                @sharedLocalizer.Buttons["Edit"]
                             </a>
                         }
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-itemid="@item.ItemId">
-                            @sharedLocalizer["Button.Delete"]
+                            @sharedLocalizer.Buttons["Delete"]
                         </button>
                     </td>
                     <td>
                         @if (item.IsSold)
                         {
-                            <span>@sharedLocalizer["Button.Sold"]</span>
+                            <span>@sharedLocalizer.Buttons["Sold"]</span>
                         }
                         else
                         {
                             <form asp-action="SellItem" method="post">
                                 <input type="hidden" name="itemId" value="@item.ItemId" />
-                                <input type="number" name="salePrice" placeholder=@sharedLocalizer["Button.SellingPrice"] required />
-                                <button type="submit" class="btn btn-success">@sharedLocalizer["Button.Sell"]</button>
+                                <input type="number" name="salePrice" placeholder=@sharedLocalizer.Buttons["SoldPrice"] required />
+                                <button type="submit" class="btn btn-success">@sharedLocalizer.Buttons["Sell"]</button>
                             </form>
                         }
                     </td>
@@ -90,17 +91,17 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">@sharedLocalizer["Message.Delete.Title"]</h5>
+                <h5 class="modal-title" id="deleteModalLabel">@sharedLocalizer.Messages["DeleteTitle"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @sharedLocalizer["Message.Delete.Description"]
+                @sharedLocalizer.Messages["DeletionConfirmation"]
             </div>
             <div class="modal-footer">
                 <form id="deleteForm" method="post" action="">
-                    <button type="submit" class="btn btn-danger">@sharedLocalizer["Button.Yes"]</button>
+                    <button type="submit" class="btn btn-danger">@sharedLocalizer.Buttons["Yes"]</button>
                 </form>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@sharedLocalizer["Button.No"]</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@sharedLocalizer.Buttons["No"]</button>
             </div>
         </div>
     </div>

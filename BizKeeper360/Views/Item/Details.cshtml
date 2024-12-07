@@ -1,0 +1,33 @@
+﻿@model BizKeeper360.Models.Entities.Item
+@inject BizKeeper360.Resources.SharedLocalizationService sharedLocalizer
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container-details">
+    <div class="container-tb">
+        <div class="item-details">
+            <p>
+                <b>@Model.Name</b>
+            </p>
+            <img src="@Model.ImagePath" alt="@Model.Name" style="width: 300px; height: 300px;" />
+            <div>
+                <b>@sharedLocalizer.Buttons["Description"]:</b>
+                <p>@Model.Description</p>
+            </div>
+            <div>
+                <b>@sharedLocalizer.Buttons["Price"]:</b>
+                <p>@Model.Price @Model.Currency</p>
+            </div>
+            <div>
+                <b>@sharedLocalizer.Buttons["Category"]:</b>
+                <p>@Model.Rating</p>
+            </div>
+            <div>
+                <b>@sharedLocalizer.Buttons["ExpirationDate"]:</b>
+                <p>@Model.ExpirationDate.ToString()</p>
+            </div>
+        </div>
+    </div>
+</div>

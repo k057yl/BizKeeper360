@@ -1,28 +1,28 @@
 ﻿@model IEnumerable<BizKeeper360.Models.Entities.Sale>
 @inject BizKeeper360.Resources.SharedLocalizationService sharedLocalizer
 
-<h2>@sharedLocalizer["SalesPage.SalesHistory"]</h2>
+<h2>@sharedLocalizer.Pages["SalesPage.SalesHistory"]</h2>
 
 <div class="dropdown">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        @sharedLocalizer["Sales.Filter"]
+        @sharedLocalizer.Buttons["Filter"]
     </button>
     <ul class="dropdown-menu" aria-labelledby="filterDropdown">
         <li>
             <form method="get">
                 <div class="row p-3">
                     <div class="col-md-6">
-                        <label for="startDate">@sharedLocalizer["Sales.StartDate"]</label>
+                        <label for="startDate">@sharedLocalizer.Buttons["Filter.StartDate"]</label>
                         <input type="date" id="startDate" name="startDate" class="form-control" value="@ViewData["StartDate"]" />
                     </div>
                     <div class="col-md-6">
-                        <label for="endDate">@sharedLocalizer["Sales.EndDate"]</label>
+                        <label for="endDate">@sharedLocalizer.Buttons["Filter.EndDate"]</label>
                         <input type="date" id="endDate" name="endDate" class="form-control" value="@ViewData["EndDate"]" />
                     </div>
                 </div>
                 <div class="d-flex justify-content-between p-3">
-                    <button type="submit" class="btn btn-primary">@sharedLocalizer["Button.Filter"]</button>
-                    <a href="@Url.Action("Sales")" class="btn btn-outline-secondary">@sharedLocalizer["Button.ResetFilter"]</a> 
+                    <button type="submit" class="btn btn-primary">@sharedLocalizer.Buttons["Filter"]</button>
+                    <a href="@Url.Action("Sales")" class="btn btn-outline-secondary">@sharedLocalizer.Buttons["Filter.ResetFilter"]</a>
                 </div>
             </form>
         </li>
@@ -33,12 +33,12 @@
     <table class="table">
         <thead>
             <tr>
-                <th>@sharedLocalizer["CreatePage.Image"]</th>
-                <th>@sharedLocalizer["CreatePage.Name"]</th>
-                <th>@sharedLocalizer["SalesPage.SaleDate"]</th>
-                <th>@sharedLocalizer["SalesPage.SalePrice"]</th>
-                <th>@sharedLocalizer["SalesPage.Profit"]</th>
-                <th>@sharedLocalizer["CreatePage.Actions"]</th>
+                <th>@sharedLocalizer.Tables["Image"]</th>
+                <th>@sharedLocalizer.Tables["Name"]</th>
+                <th>@sharedLocalizer.Tables["SaleDate"]</th>
+                <th>@sharedLocalizer.Tables["SoldPrice"]</th>
+                <th>@sharedLocalizer.Tables["Profit"]</th>
+                <th>@sharedLocalizer.Tables["Actions"]</th>
             </tr>
         </thead>
         <tbody>
@@ -55,7 +55,7 @@
                         }
                         else
                         {
-                            <span>@sharedLocalizer["NoImage"]</span>
+                            <span>@sharedLocalizer.Messages["NoImage"]</span>
                         }
                     </td>
                     <td>@sale.ItemName</td>
@@ -63,7 +63,7 @@
                     <td>@sale.SalePrice @sale.Currency</td>
                     <td>@sale.Profit @sale.Currency</td>
                     <td>
-                        <button type="button" onclick="deleteSale(@sale.SaleId)" class="btn btn-danger">@sharedLocalizer["Button.Delete"]</button>
+                        <button type="button" onclick="deleteSale(@sale.SaleId)" class="btn btn-danger">@sharedLocalizer.Buttons["Delete"]</button>
                     </td>
                 </tr>
             }
