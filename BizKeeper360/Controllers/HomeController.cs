@@ -1,6 +1,8 @@
+using BizKeeper360.Data;
 using BizKeeper360.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Diagnostics;
 
@@ -9,7 +11,7 @@ namespace BizKeeper360.Controllers
     //[Authorize]
     public class HomeController : BaseController<HomeController>
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
 
         public HomeController(IStringLocalizer<HomeController> localizer) : base(localizer)
         {

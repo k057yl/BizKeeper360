@@ -1,0 +1,8 @@
+﻿# Игнорировать все JSON-файлы
+*.json
+
+# Игнорировать Docker Compose файлы
+docker-compose.*
+
+# Игнорировать Dockerfile
+Dockerfile

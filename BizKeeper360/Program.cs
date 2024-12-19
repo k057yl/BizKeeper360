@@ -8,48 +8,45 @@ using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+// Получение строки подключения для PostgreSQL
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// Настройка ApplicationDbContext для PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+{
+    options.UseNpgsql(connectionString); // PostgreSQL
+});
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Настройка Identity
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
-// Configure localization
+// Настройка локализации
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddControllersWithViews()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
 
-
-
-// Register custom localization service if needed
+// Регистрация сервиса для локализации
 builder.Services.AddSingleton<SharedLocalizationService>();
 
-builder.Services.Configure<RequestLocalizationOptions>(option =>
+builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var supportedCultures = new[]
-    {
-        new CultureInfo("en-US"),
-        new CultureInfo("uk-UA")
-    };
-
-    option.DefaultRequestCulture = new RequestCulture("en-US");
-    option.SupportedCultures = supportedCultures;
-    option.SupportedUICultures = supportedCultures;
-    option.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
+    var supportedCultures = new[] { new CultureInfo("en-US"), new CultureInfo("uk-UA") };
+    options.DefaultRequestCulture = new RequestCulture("en-US");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
 });
 
 var app = builder.Build();
 
+// Настройка локализации запросов
 app.UseRequestLocalization();
 
-// Configure the HTTP request pipeline.
+// Настройка middleware для обработки запросов
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -57,17 +54,15 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
 
+// Настройка маршрутов
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

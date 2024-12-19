@@ -55,24 +55,27 @@ namespace BizKeeper360.Controllers
                         imagePath = $"/images/{fileName}";
                     }
 
-                    var expirationDate = model.ExpirationDate ?? DateTime.MaxValue;
+                    // Set the expiration date to DateTime.MaxValue if it's null.
+                    var utcExpirationDate = model.ExpirationDate.HasValue
+                        ? DateTime.SpecifyKind(model.ExpirationDate.Value, DateTimeKind.Utc)
+                        : DateTime.MaxValue; // or null if not required in some cases
 
                     var item = new Item
                     {
                         Name = model.Name,
-                        CreationDate = DateTime.Now,
-                        ExpirationDate = expirationDate,
+                        CreationDate = DateTime.UtcNow,
+                        ExpirationDate = utcExpirationDate,
                         ImagePath = imagePath,
                         Description = model.Description,
                         Rating = model.Rating,
                         Price = model.Price,
                         Currency = model.Currency,
-                        UserId = user.Id,
+                        UserId = user.Id, // Ensure UserId is correctly set
                     };
 
                     _context.Items.Add(item);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("UserItems");
                 }
                 ModelState.AddModelError("", "User not found.");
             }
@@ -160,7 +163,7 @@ namespace BizKeeper360.Controllers
 
             item.Name = model.Name;
             item.Description = model.Description;
-            item.ExpirationDate = model.ExpirationDate;
+            item.ExpirationDate = model.ExpirationDate.HasValue ? DateTime.SpecifyKind(model.ExpirationDate.Value, DateTimeKind.Utc) : (DateTime?)null;
             item.Rating = model.Rating;
             item.Price = model.Price;
             item.Currency = model.Currency;
@@ -212,7 +215,7 @@ namespace BizKeeper360.Controllers
                 ItemId = item.ItemId,
                 Name = item.Name,
                 Description = item.Description,
-                SaleDate = DateTime.Now,
+                SaleDate = DateTime.UtcNow, // Преобразование в UTC
                 SalePrice = salePrice,
                 Profit = salePrice - item.Price,
                 Currency = item.Currency,
@@ -247,25 +250,12 @@ namespace BizKeeper360.Controllers
 
             var sales = await salesQuery.ToListAsync();
 
-            // Передача выбранных дат в представление для отображения в фильтре
             ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
             ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
 
             return View(sales);
         }
 
-        /*
-        public async Task<IActionResult> Sales()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var sales = await _context.Sales
-                .Include(s => s.Item)
-                .Where(s => s.Item.UserId == user.Id || s.Item == null)
-                .ToListAsync();
-
-            return View(sales);
-        }
-        */
         [HttpPost]
         public async Task<IActionResult> DeleteItem(int id)
         {
@@ -287,6 +277,6 @@ namespace BizKeeper360.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("UserItems", "Item");
-        } 
+        }
     }
 }

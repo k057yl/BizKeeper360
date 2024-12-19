@@ -19,5 +19,9 @@ namespace BizKeeper360.Models.Entities
         public bool IsDeleted { get; set; }
 
         public ICollection<Sale> Sales { get; set; }
+
+        // Convert DateTime to UTC before saving
+        public DateTime GetUtcCreationDate() => DateTime.SpecifyKind(CreationDate, DateTimeKind.Utc);
+        public DateTime? GetUtcExpirationDate() => ExpirationDate.HasValue ? DateTime.SpecifyKind(ExpirationDate.Value, DateTimeKind.Utc) : (DateTime?)null;
     }
 }

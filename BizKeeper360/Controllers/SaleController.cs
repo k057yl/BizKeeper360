@@ -26,5 +26,7 @@ namespace BizKeeper360.Controllers
 
             return RedirectToAction("SalesList");
         }
+
+        
     }
 }
