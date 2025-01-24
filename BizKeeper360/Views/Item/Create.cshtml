@@ -1,6 +1,7 @@
 ﻿@model BizKeeper360.Models.DTO.ItemDTO
 @using BizKeeper360.Controllers
 @inject BizKeeper360.Resources.SharedLocalizationService localizer
+@inject BizKeeper360.Servises.CategoryLocalizationService categoryLocalizationService
 
 <div class="create-item-container">
     <div class="create-item-title">
@@ -32,7 +33,7 @@
 
             <div class="form-group">
                 <label asp-for="Description" class="control-label">@localizer.Buttons["Description"]</label>
-                <input asp-for="Description" class="form-control" placeholder="@localizer.Buttons["Field.Description"]" />
+                <textarea id="DescriptionField" name="Description" class="form-control description-field" rows="3" placeholder="@localizer.Buttons["Field.Description"]"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
@@ -53,9 +54,15 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="Rating" class="control-label">@localizer.Buttons["Category"]</label>
-                <input asp-for="Rating" class="form-control" placeholder="@localizer.Buttons["Field.Category"]" />
-                <span asp-validation-for="Rating" class="text-danger"></span>
+                <label asp-for="Category" class="control-label">@localizer.Buttons["Category"]</label>
+                <select asp-for="Category" class="form-control" aria-placeholder="@localizer.Buttons["Field.Category"]">
+                    <option value="">@localizer.Categories["SelectCategory"]</option>
+                    @foreach (var category in categoryLocalizationService.GetLocalizedCategories())
+                    {
+                        <option value="@category.Key">@category.Value</option>
+                    }
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -71,6 +78,15 @@
             </div>
 
             <div class="form-group">
+                <label for="captcha" class="control-label">@localizer.Buttons["Captcha"]</label>
+                <div>
+                    <img src="@Url.Action("GetCaptcha", "Captcha")" id="captchaImage" />
+                    <input type="text" id="captcha" name="captcha" class="form-control" placeholder="@localizer.Buttons["EnterCaptcha"]" />
+                </div>
+                <span asp-validation-for="Captcha" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
                 <input type="submit" value="@localizer.Buttons["Save"]" class="btn btn-primary" />
             </div>
         </form>
@@ -79,50 +95,5 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-    <script>
-        const fileInput = document.getElementById("fileUpload");
-        const thumbnail = document.getElementById("thumbnail");
-        const removeButton = document.getElementById("removeButton");
-        const fileLabel = document.querySelector("label[for='fileUpload']");
-
-        const defaultLabelText = "@localizer.Buttons["SelectFile"]";
-
-        fileInput.addEventListener("change", function (event) {
-            const file = event.target.files[0];
-
-            if (file && file.type.startsWith("image/")) {
-                fileLabel.textContent = file.name;
-
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    thumbnail.src = e.target.result;
-                    thumbnail.style.display = "block";
-                    removeButton.style.display = "block";
-                };
-                reader.readAsDataURL(file);
-            } else {
-                clearThumbnail();
-            }
-        });
-
-        removeButton.addEventListener("click", function () {
-            clearThumbnail();
-            fileInput.value = "";
-            fileLabel.textContent = defaultLabelText;
-        });
-
-        function clearThumbnail() {
-            thumbnail.style.display = "none";
-            thumbnail.src = "#";
-            removeButton.style.display = "none";
-            fileLabel.textContent = defaultLabelText;
-        }
-
-        const showExpirationDateCheckbox = document.getElementById("ShowExpirationDateCheckbox");
-        const expirationDateContainer = document.getElementById("expirationDateContainer");
-
-        showExpirationDateCheckbox.addEventListener("change", function () {
-            expirationDateContainer.style.display = showExpirationDateCheckbox.checked ? "block" : "none";
-        });
-    </script>
+    <script src="~/js/site.js"></script>
 }

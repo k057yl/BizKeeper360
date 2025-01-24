@@ -1,10 +1,9 @@
-﻿using BizKeeper360.Data;
+﻿using BizKeeper360.Interfaces;
 using BizKeeper360.Models.DTO;
-using BizKeeper360.Models.Entities;
+using BizKeeper360.Servises;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace BizKeeper360.Controllers
@@ -12,75 +11,51 @@ namespace BizKeeper360.Controllers
     [Authorize]
     public class ItemController : BaseController<ItemController>
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IItemService _itemService;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly HtmlValidator _htmlValidator;
 
-        public ItemController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<ItemController> localizer) : base(localizer)
+        public ItemController(IItemService itemService, UserManager<IdentityUser> userManager, IStringLocalizer<ItemController> localizer, HtmlValidator htmlValidator)
+            : base(localizer)
         {
-            _context = context;
+            _itemService = itemService;
             _userManager = userManager;
+            _htmlValidator = htmlValidator;
         }
 
         [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Create(ItemDTO model)
+        public async Task<IActionResult> Create(ItemDTO model, string captcha)
         {
-            if (ModelState.IsValid)
+            string correctCaptcha = HttpContext.Session.GetString("Captcha");
+
+            if (captcha != correctCaptcha)
             {
-                var user = await _userManager.GetUserAsync(User);
-                if (user != null)
-                {
-                    string? imagePath = null;
-
-                    if (model.ImageFile != null && model.ImageFile.Length > 0)
-                    {
-                        var fileName = Path.GetFileName(model.ImageFile.FileName);
-                        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
-                        if (!Directory.Exists(uploads))
-                        {
-                            Directory.CreateDirectory(uploads);
-                        }
-                        var filePath = Path.Combine(uploads, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await model.ImageFile.CopyToAsync(stream);
-                        }
-
-                        imagePath = $"/images/{fileName}";
-                    }
-
-                    // Set the expiration date to DateTime.MaxValue if it's null.
-                    var utcExpirationDate = model.ExpirationDate.HasValue
-                        ? DateTime.SpecifyKind(model.ExpirationDate.Value, DateTimeKind.Utc)
-                        : DateTime.MaxValue; // or null if not required in some cases
-
-                    var item = new Item
-                    {
-                        Name = model.Name,
-                        CreationDate = DateTime.UtcNow,
-                        ExpirationDate = utcExpirationDate,
-                        ImagePath = imagePath,
-                        Description = model.Description,
-                        Rating = model.Rating,
-                        Price = model.Price,
-                        Currency = model.Currency,
-                        UserId = user.Id, // Ensure UserId is correctly set
-                    };
-
-                    _context.Items.Add(item);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("UserItems");
-                }
-                ModelState.AddModelError("", "User not found.");
+                ModelState.AddModelError("Captcha", "Неверная капча.");
+                return View(model);
             }
 
-            return View(model);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Пользователь не найден.");
+                return View(model);
+            }
+
+            if (!_htmlValidator.ValidateHtml(model.Description))
+            {
+                return View(model);
+            }
+
+            var item = await _itemService.CreateItemAsync(model, user.Id);
+            return RedirectToAction("UserItems");
         }
 
         [HttpGet]
@@ -92,30 +67,25 @@ namespace BizKeeper360.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            var items = await _context.Items
-                .Where(i => i.UserId == user.Id)
-                .ToListAsync();
-
+            var items = await _itemService.GetUserItemsAsync(user.Id);
             return View(items);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var item = await _context.Items.FindAsync(id);
-            if (item == null || item.UserId != _userManager.GetUserId(User))
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || !await _itemService.DeleteItemAsync(id, user.Id))
             {
                 return NotFound();
             }
 
-            _context.Items.Remove(item);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("UserItems", "Item");
+            return RedirectToAction("UserItems");
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var item = await _context.Items.FirstOrDefaultAsync(i => i.ItemId == id);
+            var item = await _itemService.GetItemDetailsAsync(id);
             if (item == null)
             {
                 return NotFound();
@@ -127,8 +97,14 @@ namespace BizKeeper360.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var item = await _context.Items.FirstOrDefaultAsync(i => i.ItemId == id && i.UserId == _userManager.GetUserId(User));
-            if (item == null)
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var item = await _itemService.GetItemDetailsAsync(id);
+            if (item == null || item.UserId != user.Id)
             {
                 return NotFound();
             }
@@ -138,7 +114,7 @@ namespace BizKeeper360.Controllers
                 Name = item.Name,
                 Description = item.Description,
                 ExpirationDate = item.ExpirationDate,
-                Rating = item.Rating,
+                Category = item.Category,
                 Price = item.Price,
                 Currency = item.Currency,
                 ExistingImagePath = item.ImagePath
@@ -148,84 +124,54 @@ namespace BizKeeper360.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, ItemDTO model)
+        public async Task<IActionResult> Edit(int id, ItemDTO model, string captcha)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var item = await _context.Items.FirstOrDefaultAsync(i => i.ItemId == id && i.UserId == _userManager.GetUserId(User));
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var item = await _itemService.EditItemAsync(id, model, user.Id);
             if (item == null)
             {
                 return NotFound();
             }
 
-            item.Name = model.Name;
-            item.Description = model.Description;
-            item.ExpirationDate = model.ExpirationDate.HasValue ? DateTime.SpecifyKind(model.ExpirationDate.Value, DateTimeKind.Utc) : (DateTime?)null;
-            item.Rating = model.Rating;
-            item.Price = model.Price;
-            item.Currency = model.Currency;
-
-            if (model.ImageFile != null && model.ImageFile.Length > 0)
+            if (!_htmlValidator.ValidateHtml(model.Description))
             {
-                if (!string.IsNullOrEmpty(item.ImagePath))
-                {
-                    var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", item.ImagePath.TrimStart('/'));
-                    if (System.IO.File.Exists(oldImagePath))
-                    {
-                        System.IO.File.Delete(oldImagePath);
-                    }
-                }
-
-                var fileName = Path.GetFileName(model.ImageFile.FileName);
-                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
-                if (!Directory.Exists(uploads))
-                {
-                    Directory.CreateDirectory(uploads);
-                }
-                var filePath = Path.Combine(uploads, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await model.ImageFile.CopyToAsync(stream);
-                }
-
-                item.ImagePath = $"/images/{fileName}";
+                return View(model);
             }
 
-            _context.Items.Update(item);
-            await _context.SaveChangesAsync();
+            string correctCaptcha = HttpContext.Session.GetString("Captcha");
+
+            if (captcha != correctCaptcha)
+            {
+                ModelState.AddModelError("Captcha", "Неверная капча.");
+                return View(model);
+            }
+
             return RedirectToAction("UserItems");
         }
 
         public async Task<IActionResult> SellItem(int itemId, decimal salePrice, decimal profit)
         {
-            var item = await _context.Items.FirstOrDefaultAsync(i => i.ItemId == itemId);
-            if (item == null || item.UserId != _userManager.GetUserId(User))
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var sale = await _itemService.SellItemAsync(itemId, salePrice, profit, user.Id);
+            if (sale == null)
             {
                 return NotFound();
             }
-
-            string imagePath = item.ImagePath ?? "/images/Logo_v1.png";
-
-            var sale = new Sale
-            {
-                ItemId = item.ItemId,
-                Name = item.Name,
-                Description = item.Description,
-                SaleDate = DateTime.UtcNow, // Преобразование в UTC
-                SalePrice = salePrice,
-                Profit = salePrice - item.Price,
-                Currency = item.Currency,
-                ItemIsDeleted = item.IsDeleted,
-                ItemImagePath = imagePath
-            };
-
-            _context.Sales.Add(sale);
-            item.IsSold = true;
-            await _context.SaveChangesAsync();
 
             return RedirectToAction("Sales");
         }
@@ -233,50 +179,10 @@ namespace BizKeeper360.Controllers
         public async Task<IActionResult> Sales(DateTime? startDate, DateTime? endDate)
         {
             var user = await _userManager.GetUserAsync(User);
-
-            var salesQuery = _context.Sales
-                .Include(s => s.Item)
-                .Where(s => s.Item.UserId == user.Id || s.Item == null);
-
-            if (startDate.HasValue)
-            {
-                salesQuery = salesQuery.Where(s => s.SaleDate >= startDate.Value);
-            }
-
-            if (endDate.HasValue)
-            {
-                salesQuery = salesQuery.Where(s => s.SaleDate <= endDate.Value);
-            }
-
-            var sales = await salesQuery.ToListAsync();
-
+            var sales = await _itemService.GetSalesAsync(user.Id, startDate, endDate);
             ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
             ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
-
             return View(sales);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteItem(int id)
-        {
-            var item = await _context.Items.Include(i => i.Sales).FirstOrDefaultAsync(i => i.ItemId == id);
-            if (item == null || item.UserId != _userManager.GetUserId(User))
-            {
-                return NotFound();
-            }
-
-            item.IsDeleted = true;
-
-            foreach (var sale in item.Sales)
-            {
-                sale.ItemIsDeleted = true;
-            }
-
-            _context.Items.Update(item);
-            _context.Sales.UpdateRange(item.Sales);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("UserItems", "Item");
         }
     }
 }

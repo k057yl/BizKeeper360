@@ -44,7 +44,7 @@
                     <td>@item.Description</td>
                     <td>@item.CreationDate</td>
                     <td>
-                        @if (item.ExpirationDate == DateTime.MaxValue)
+                        @if (item.ExpirationDate == new DateTime(2099, 12, 31))
                         {
                             @sharedLocalizer.Messages["NoExperationDate"]
                         }
@@ -54,7 +54,7 @@
                         }
                     </td>
                     <td>@item.Price @item.Currency</td>
-                    <td>@item.Rating</td>
+                    <td>@item.Category</td>
                     <td>
                         @if (!item.IsSold)
                         {

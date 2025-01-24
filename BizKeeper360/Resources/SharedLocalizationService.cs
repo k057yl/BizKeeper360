@@ -23,22 +23,6 @@ namespace BizKeeper360.Resources
         public IStringLocalizer Tables => GetLocalizer<TableResources>();
         public IStringLocalizer Pages => GetLocalizer<PageResources>();
         public IStringLocalizer Messages => GetLocalizer<MessageResources>();
+        public IStringLocalizer Categories => GetLocalizer<CategoriesResources>();
     }
-    /*
-    public class SharedLocalizationService
-    {
-        private readonly IStringLocalizer _localizer;
-
-        public SharedLocalizationService(IStringLocalizerFactory factory)
-        {
-            var type = typeof(SharedResources);
-            var assemblyName = new AssemblyName(type.GetTypeInfo().Assembly.FullName);
-            _localizer = factory.Create("SharedResources", assemblyName.Name);
-        }
-
-        public LocalizedString this[string key] => _localizer[key];
-
-        public LocalizedString this[string key, params object[] arguments] => _localizer[key, arguments];
-    }
-    */
 }

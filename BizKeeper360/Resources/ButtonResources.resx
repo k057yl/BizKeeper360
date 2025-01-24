@@ -219,4 +219,10 @@
   <data name="Description" xml:space="preserve">
     <value />
   </data>
+  <data name="EnterCaptcha" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Captcha" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -1,16 +1,38 @@
-﻿namespace BizKeeper360.Models.DTO
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using BizKeeper360.Models.Enums;
+
+namespace BizKeeper360.Models.DTO
 {
     public class ItemDTO
     {
         public int ItemId { get; set; }
-        public string Name { get; set; } 
+
+        [Required]
+        [MaxLength(200)]
+        public string Name { get; set; }
+
         public DateTime? ExpirationDate { get; set; }
-        public IFormFile ImageFile { get; set; }
-        public string Description { get; set; }
+
+        public IFormFile? ImageFile { get; set; }
+
+        [Required]
+        public string? Description { get; set; }
+
+        [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
-        public int Rating { get; set; }
+
+        [Required]
+        public Category Category { get; set; }
+
+        [MaxLength(10)]
         public string Currency { get; set; }
+
         public string? ExistingImagePath { get; set; }
+
+        [Required]
         public bool IsSold { get; set; }
+        public string Captcha { get; set; }
     }
 }

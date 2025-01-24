@@ -1,5 +1,4 @@
-﻿using BizKeeper360.Models;
-using BizKeeper360.Models.Entities;
+﻿using BizKeeper360.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

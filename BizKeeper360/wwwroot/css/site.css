@@ -76,6 +76,16 @@ table th, table td {
     border-radius: 2%;
 }
 
+#DescriptionField {
+    resize: none;
+    max-height: 200px;
+}
+
+#saveButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
 /*CreateTitle*/
 .create-item-title {
     position: absolute;
