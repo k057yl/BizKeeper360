@@ -63,19 +63,63 @@
                     <td>@sale.SalePrice @sale.Currency</td>
                     <td>@sale.Profit @sale.Currency</td>
                     <td>
-                        <button type="button" onclick="deleteSale(@sale.SaleId)" class="btn btn-danger">@sharedLocalizer.Buttons["Delete"]</button>
+                        <button type="button" data-saleid="@sale.SaleId" class="btn btn-danger">
+                            @sharedLocalizer.Buttons["Delete"]
+                        </button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel">@sharedLocalizer.Messages["DeleteTitle"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @sharedLocalizer.Messages["DeletionConfirmation"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">@sharedLocalizer.Buttons["Yes"]</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@sharedLocalizer.Buttons["No"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="~/js/site.js"></script>
     <script>
-        function deleteSale(saleId) {
-            fetch(`/Sale/DeleteSale?saleId=${saleId}`, {
-                method: 'POST'
-            }).then(() => location.reload());
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const deleteButtons = document.querySelectorAll("button[data-saleid]");
+            let saleIdToDelete = null;
+
+            deleteButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    saleIdToDelete = button.getAttribute("data-saleid");
+                    const modal = new bootstrap.Modal(document.getElementById("confirmDeleteModal"));
+                    modal.show();
+                });
+            });
+
+            document.getElementById("confirmDeleteButton").addEventListener("click", function () {
+                if (saleIdToDelete) {
+                    deleteSale(saleIdToDelete);
+                    saleIdToDelete = null;
+                }
+            });
+
+            function deleteSale(saleId) {
+                fetch(`/Sale/DeleteSale?saleId=${saleId}`, {
+                    method: 'POST'
+                }).then(() => location.reload());
+            }
+        });
     </script>
 }

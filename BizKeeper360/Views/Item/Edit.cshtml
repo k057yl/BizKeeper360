@@ -9,7 +9,6 @@
     </div>
     <div class="form-container">
         <form asp-action="Edit" method="post" enctype="multipart/form-data">
-            <!-- Hidden field to pass element ID -->
             <input type="hidden" asp-for="ItemId" />
 
             <div class="form-group">
@@ -61,7 +60,6 @@
                     </div>
                 </div>
 
-                <!-- Thumbnail container with delete button -->
                 <div id="thumbnailContainer" style="position: relative; display: inline-block; margin-top: 10px;">
                     <img id="thumbnail" src="@Model.ExistingImagePath" alt="Preview" style="display: @(!string.IsNullOrEmpty(Model.ExistingImagePath) ? "block" : "none"); width:100px; height:100px; border: 1px solid #ced4da;" />
                     <button type="button" id="removeButton" style="display: @(!string.IsNullOrEmpty(Model.ExistingImagePath) ? "block" : "none"); position: absolute; top: -5px; right: -5px; background-color: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; text-align: center; line-height: 18px; font-size: 16px;">&Chi;</button>
@@ -93,42 +91,5 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-    <script>
-        const fileInput = document.getElementById("fileUpload");
-        const thumbnail = document.getElementById("thumbnail");
-        const removeButton = document.getElementById("removeButton");
-
-        // Initialize the thumbnail if the image already has a path.
-        if (thumbnail.src) {
-            thumbnail.style.display = "block";
-            removeButton.style.display = "block";
-        }
-
-        fileInput.addEventListener("change", function (event) {
-            const file = event.target.files[0];
-
-            if (file && file.type.startsWith("image/")) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    thumbnail.src = e.target.result;
-                    thumbnail.style.display = "block";
-                    removeButton.style.display = "block";
-                };
-                reader.readAsDataURL(file);
-            } else {
-                clearThumbnail();
-            }
-        });
-
-        removeButton.addEventListener("click", function () {
-            clearThumbnail();
-            fileInput.value = "";
-        });
-
-        function clearThumbnail() {
-            thumbnail.style.display = "none";
-            thumbnail.src = "#";
-            removeButton.style.display = "none";
-        }
-    </script>
+    <script src="/js/site.js"></script>
 }
