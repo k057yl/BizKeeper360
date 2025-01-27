@@ -10,7 +10,5 @@ namespace BizKeeper360.Interfaces
         Task<bool> DeleteItemAsync(int id, string userId);
         Task<Item> GetItemDetailsAsync(int id);
         Task<List<Item>> GetUserItemsAsync(string userId);
-        Task<Sale> SellItemAsync(int itemId, decimal salePrice, decimal profit, string userId);
-        Task<List<Sale>> GetSalesAsync(string userId, DateTime? startDate, DateTime? endDate);
     }
 }

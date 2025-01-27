@@ -130,52 +130,5 @@ namespace BizKeeper360.Servises
         {
             return await _context.Items.Where(i => i.UserId == userId).ToListAsync();
         }
-
-        public async Task<Sale> SellItemAsync(int itemId, decimal salePrice, decimal profit, string userId)
-        {
-            var item = await _context.Items.FirstOrDefaultAsync(i => i.ItemId == itemId && i.UserId == userId);
-            if (item == null)
-            {
-                return null;
-            }
-
-            string imagePath = item.ImagePath ?? "/images/Logo_v1.png";
-
-            var sale = new Sale
-            {
-                ItemId = item.ItemId,
-                Name = item.Name,
-                Description = item.Description,
-                SaleDate = DateTime.UtcNow,
-                SalePrice = salePrice,
-                Profit = salePrice - item.Price,
-                Currency = item.Currency,
-                ItemIsDeleted = item.IsDeleted,
-                ItemImagePath = imagePath
-            };
-
-            _context.Sales.Add(sale);
-            item.IsSold = true;
-            await _context.SaveChangesAsync();
-
-            return sale;
-        }
-
-        public async Task<List<Sale>> GetSalesAsync(string userId, DateTime? startDate, DateTime? endDate)
-        {
-            var salesQuery = _context.Sales.Include(s => s.Item).Where(s => s.Item.UserId == userId || s.Item == null);
-
-            if (startDate.HasValue)
-            {
-                salesQuery = salesQuery.Where(s => s.SaleDate >= startDate.Value);
-            }
-
-            if (endDate.HasValue)
-            {
-                salesQuery = salesQuery.Where(s => s.SaleDate <= endDate.Value);
-            }
-
-            return await salesQuery.ToListAsync();
-        }
     }
 }

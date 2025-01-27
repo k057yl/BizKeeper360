@@ -12,6 +12,7 @@ namespace BizKeeper360.Servises
             services.AddScoped<SharedResources>();
             services.AddScoped<SharedLocalizationService>();
             services.AddScoped<IItemService, ItemService>();
+            services.AddScoped<ISaleService, SaleService>();
             services.AddScoped<CategoryLocalizationService>();
         }
     }

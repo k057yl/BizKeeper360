@@ -63,18 +63,24 @@
     document.querySelectorAll("form[action='SellItem']").forEach(form => {
         form.addEventListener("submit", function (event) {
             event.preventDefault();
+
             const itemId = form.querySelector("input[name='itemId']").value;
             const salePrice = form.querySelector("input[name='salePrice']").value;
+            const profit = form.querySelector("input[name='profit']").value;
 
             if (!salePrice || parseFloat(salePrice) <= 0) {
-                alert("Please enter a valid sale price.");
+                alert("Please enter valid sale price and profit.");
                 return;
             }
 
-            fetch(`/Item/SellItem`, {
+            fetch("/Sale/Sales", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ itemId, salePrice })
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({
+                    itemId: itemId,
+                    salePrice: salePrice,
+                    profit: profit
+                })
             })
                 .then(response => {
                     if (response.ok) {
@@ -84,5 +90,35 @@
                     }
                 });
         });
+    });
+
+    // Delete sell functionality
+    const deleteButtons = document.querySelectorAll("button[data-saleid]");
+    let saleIdToDelete = null;
+
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            saleIdToDelete = button.getAttribute("data-saleid");
+            const modal = new bootstrap.Modal(document.getElementById("confirmDeleteModal"));
+            modal.show();
+        });
+    });
+
+    document.getElementById("confirmDeleteButton")?.addEventListener("click", function () {
+        if (saleIdToDelete) {
+            deleteSale(saleIdToDelete);
+            saleIdToDelete = null;
+        }
+    });
+
+    function deleteSale(saleId) {
+        fetch(`/Sale/DeleteSale?saleId=${saleId}`, {
+            method: 'POST'
+        }).then(() => location.reload());
+    }
+
+    document.addEventListener("hidden.bs.modal", function () {
+        const backdrops = document.querySelectorAll(".modal-backdrop");
+        backdrops.forEach(backdrop => backdrop.remove());
     });
 });

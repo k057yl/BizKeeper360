@@ -73,7 +73,7 @@
                         }
                         else
                         {
-                            <form asp-action="SellItem" method="post">
+                            <form asp-action="SellItem" asp-controller="Sale" method="post">
                                 <input type="hidden" name="itemId" value="@item.ItemId" />
                                 <input type="number" name="salePrice" placeholder=@sharedLocalizer.Buttons["SoldPrice"] required />
                                 <button type="submit" class="btn btn-success">@sharedLocalizer.Buttons["Sell"]</button>

@@ -15,12 +15,13 @@ namespace BizKeeper360.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly HtmlValidator _htmlValidator;
 
-        public ItemController(IItemService itemService, UserManager<IdentityUser> userManager, IStringLocalizer<ItemController> localizer, HtmlValidator htmlValidator)
+        public ItemController(IItemService itemService, UserManager<IdentityUser> userManager,
+            IStringLocalizer<ItemController> localizer, HtmlValidator htmlValidator)
             : base(localizer)
         {
             _itemService = itemService;
-            _userManager = userManager;
             _htmlValidator = htmlValidator;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -157,32 +158,6 @@ namespace BizKeeper360.Controllers
             }
 
             return RedirectToAction("UserItems");
-        }
-
-        public async Task<IActionResult> SellItem(int itemId, decimal salePrice, decimal profit)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var sale = await _itemService.SellItemAsync(itemId, salePrice, profit, user.Id);
-            if (sale == null)
-            {
-                return NotFound();
-            }
-
-            return RedirectToAction("Sales");
-        }
-
-        public async Task<IActionResult> Sales(DateTime? startDate, DateTime? endDate)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var sales = await _itemService.GetSalesAsync(user.Id, startDate, endDate);
-            ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
-            ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
-            return View(sales);
         }
     }
 }
